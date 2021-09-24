@@ -13,6 +13,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
@@ -27,9 +29,14 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 		// 生成jwt，并放置到请求头中
 		String jwt = jwtUtils.generateToken(authentication.getName());
+		AccountUser principal = (AccountUser)authentication.getPrincipal();
+		Map<String, Object> map = new HashMap<>();
+		map.put("principal",principal);
+		map.put("token",jwt);
+
 		response.setHeader(jwtUtils.getHeader(), jwt);
 
-		Result result = Result.succ("");
+		Result result = Result.succ(map);
 
 		outputStream.write(JSONUtil.toJsonStr(result).getBytes("UTF-8"));
 

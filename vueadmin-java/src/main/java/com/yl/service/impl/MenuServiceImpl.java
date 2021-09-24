@@ -6,7 +6,7 @@ import com.yl.common.dto.SysMenuDto;
 import com.yl.entity.Menu;
 
 import com.yl.entity.User;
-import com.yl.mapper.SysMenuMapper;
+import com.yl.mapper.MenuMapper;
 import com.yl.mapper.UserMapper;
 import com.yl.service.MenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -24,10 +24,10 @@ import java.util.List;
  * </p>
  *
  * @author 我的公众号：MarkerHub
- * @since 2021-04-05
+ * @since 2021-09-023
  */
 @Service
-public class MenuServiceImpl extends ServiceImpl<SysMenuMapper, Menu> implements MenuService {
+public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
 
 	@Autowired
 	UserService sysUserService;
@@ -102,7 +102,7 @@ public class MenuServiceImpl extends ServiceImpl<SysMenuMapper, Menu> implements
 			}
 		}
 
-		System.out.println(JSONUtil.toJsonStr(finalMenus));
+//		System.out.println(JSONUtil.toJsonStr(finalMenus));
 		return finalMenus;
 	}
 }

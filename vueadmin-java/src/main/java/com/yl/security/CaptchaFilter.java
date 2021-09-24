@@ -32,7 +32,7 @@ public class CaptchaFilter extends OncePerRequestFilter {
 
 			try{
 				// 校验验证码
-				validate(httpServletRequest);
+//				validate(httpServletRequest);
 			} catch (CaptchaException e) {
 
 				// 交给认证失败处理器

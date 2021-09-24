@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author 我的公众号：MarkerHub
  * @since 2021-04-05
  */
-public interface SysMenuMapper extends BaseMapper<Menu> {
+public interface MenuMapper extends BaseMapper<Menu> {
 
 }

@@ -21,14 +21,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * <p>
- *  前端控制器
- *  swagger2
- * </p>
- *
- * @author 我的公众号：MarkerHub
- * @since 2021-04-05
- */
+ * 角色
+ * */
 @RestController
 @RequestMapping("/sys/role")
 public class RoleController extends BaseController {

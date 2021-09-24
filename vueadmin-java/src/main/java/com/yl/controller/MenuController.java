@@ -7,7 +7,7 @@ import com.yl.common.dto.SysMenuDto;
 import com.yl.common.lang.Result;
 import com.yl.entity.Menu;
 import com.yl.entity.RoleMenu;
-import com.yl.entity.SysUser;
+import com.yl.entity.User;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -18,13 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * <p>
- *  前端控制器
- * </p>
- *
- * @author 我的公众号：MarkerHub
- * @since 2021-04-05
- */
+ * 菜单
+ * */
 @RestController
 @RequestMapping("/sys/menu")
 public class MenuController extends BaseController {
@@ -36,7 +31,7 @@ public class MenuController extends BaseController {
 	 */
 	@GetMapping("/nav")
 	public Result nav(Principal principal) {
-		SysUser sysUser = sysUserService.getByUsername(principal.getName());
+		User sysUser = sysUserService.getByUsername(principal.getName());
 
 		// 获取权限信息
 		String authorityInfo = sysUserService.getUserAuthorityInfo(sysUser.getId());// ROLE_admin,ROLE_normal,sys:user:list,....

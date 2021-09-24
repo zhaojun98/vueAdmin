@@ -1,6 +1,6 @@
 package com.yl.security;
 
-import com.yl.entity.SysUser;
+import com.yl.entity.User;
 import com.yl.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +21,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		SysUser sysUser = sysUserService.getByUsername(username);
+		User sysUser = sysUserService.getByUsername(username);
 		if (sysUser == null) {
 			throw new UsernameNotFoundException("用户名或密码不正确");
 		}

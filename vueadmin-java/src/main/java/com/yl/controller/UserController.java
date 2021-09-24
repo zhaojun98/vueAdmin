@@ -8,7 +8,7 @@ import com.yl.common.dto.PassDto;
 import com.yl.common.lang.Const;
 import com.yl.common.lang.Result;
 import com.yl.entity.Role;
-import com.yl.entity.SysUser;
+import com.yl.entity.User;
 import com.yl.entity.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,13 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * <p>
- *  前端控制器
- * </p>
- *
- * @author 我的公众号：MarkerHub
- * @since 2021-04-05
- */
+ * 用户
+ * */
 @RestController
 @RequestMapping("/sys/user")
 public class UserController extends BaseController {
@@ -43,7 +38,7 @@ public class UserController extends BaseController {
 	@PreAuthorize("hasAuthority('sys:user:list')")
 	public Result info(@PathVariable("id") Long id) {
 
-		SysUser sysUser = sysUserService.getById(id);
+		User sysUser = sysUserService.getById(id);
 		Assert.notNull(sysUser, "找不到该管理员");
 
 		List<Role> roles = sysRoleService.listRolesByUserId(id);
@@ -56,7 +51,7 @@ public class UserController extends BaseController {
 	@PreAuthorize("hasAuthority('sys:user:list')")
 	public Result list(String username) {
 
-		Page<SysUser> pageData = sysUserService.page(getPage(), new QueryWrapper<SysUser>()
+		Page<User> pageData = sysUserService.page(getPage(), new QueryWrapper<User>()
 				.like(StrUtil.isNotBlank(username), "username", username));
 
 		pageData.getRecords().forEach(u -> {
@@ -69,7 +64,7 @@ public class UserController extends BaseController {
 
 	@PostMapping("/save")
 	@PreAuthorize("hasAuthority('sys:user:save')")
-	public Result save(@Validated @RequestBody SysUser sysUser) {
+	public Result save(@Validated @RequestBody User sysUser) {
 
 		sysUser.setCreated(LocalDateTime.now());
 		sysUser.setStatu(Const.STATUS_ON);
@@ -87,7 +82,7 @@ public class UserController extends BaseController {
 
 	@PostMapping("/update")
 	@PreAuthorize("hasAuthority('sys:user:update')")
-	public Result update(@Validated @RequestBody SysUser sysUser) {
+	public Result update(@Validated @RequestBody User sysUser) {
 
 		sysUser.setUpdated(LocalDateTime.now());
 
@@ -125,7 +120,7 @@ public class UserController extends BaseController {
 		sysUserRoleService.saveBatch(userRoles);
 
 		// 删除缓存
-		SysUser sysUser = sysUserService.getById(userId);
+		User sysUser = sysUserService.getById(userId);
 		sysUserService.clearUserAuthorityInfo(sysUser.getUsername());
 
 		return Result.succ("");
@@ -135,7 +130,7 @@ public class UserController extends BaseController {
 	@PreAuthorize("hasAuthority('sys:user:repass')")
 	public Result repass(@RequestBody Long userId) {
 
-		SysUser sysUser = sysUserService.getById(userId);
+		User sysUser = sysUserService.getById(userId);
 
 		sysUser.setPassword(passwordEncoder.encode(Const.DEFULT_PASSWORD));
 		sysUser.setUpdated(LocalDateTime.now());
@@ -147,7 +142,7 @@ public class UserController extends BaseController {
 	@PostMapping("/updatePass")
 	public Result updatePass(@Validated @RequestBody PassDto passDto, Principal principal) {
 
-		SysUser sysUser = sysUserService.getByUsername(principal.getName());
+		User sysUser = sysUserService.getByUsername(principal.getName());
 
 		boolean matches = passwordEncoder.matches(passDto.getCurrentPass(), sysUser.getPassword());
 		if (!matches) {
