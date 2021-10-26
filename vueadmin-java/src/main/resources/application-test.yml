@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/jc_openweb?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/vueadmin?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
     password: zhaojun98
   redis:
@@ -47,23 +47,3 @@ markerhub:
     header: Authorization
     expire: 604800 #7天，秒单位
     secret: ji8n3439n439n43ld9ne9343fdfer49h
-
-#快递鸟用户数据
-logistics:
-  EBusinessID: 1719010
-  ApiKey: 9f1d5710-b782-4306-97ea-97eaddbb4070
-  pathUrl: https://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx
-  deliveryAmount: 30
-#短信服务信息
-SMS:
-  ACCESS_KEY_ID: jtqRY2hV2VkSYD4SKMTQp2zU2sgXkpq1fGnnxSj4K6J3wUSqw
-
-#微信H5支付
-pay:
-  h5:
-    pathUrl: https://api.mch.weixin.qq.com/pay/unifiedorder
-    appId: wxe6dcb0b3f15e8292
-    mchId: 1539989361
-    #    mch_id: 1533573591
-    md5Key: d2997df64fc20203de669d81bf0b6412
-    notifyUrl: https://pay.cpzsyun.com/app/sys/h5/callback

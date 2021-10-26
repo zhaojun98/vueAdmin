@@ -65,7 +65,7 @@ public class MenuController extends BaseController {
 	@PreAuthorize("hasAuthority('sys:menu:save')")
 	public Result save(@Validated @RequestBody Menu sysMenu) {
 
-		sysMenu.setCreated(LocalDateTime.now());
+		sysMenu.setCreateTime(LocalDateTime.now());
 
 		sysMenuService.save(sysMenu);
 		return Result.succ(sysMenu);
@@ -75,7 +75,7 @@ public class MenuController extends BaseController {
 	@PreAuthorize("hasAuthority('sys:menu:update')")
 	public Result update(@Validated @RequestBody Menu sysMenu) {
 
-		sysMenu.setUpdated(LocalDateTime.now());
+		sysMenu.setUpdateTime(LocalDateTime.now());
 
 		sysMenuService.updateById(sysMenu);
 

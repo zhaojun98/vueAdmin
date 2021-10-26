@@ -28,11 +28,12 @@ public class CaptchaFilter extends OncePerRequestFilter {
 
 		String url = httpServletRequest.getRequestURI();
 
+		//登录入口
 		if ("/login".equals(url) && httpServletRequest.getMethod().equals("POST")) {
 
 			try{
 				// 校验验证码
-//				validate(httpServletRequest);
+				validate(httpServletRequest);
 			} catch (CaptchaException e) {
 
 				// 交给认证失败处理器

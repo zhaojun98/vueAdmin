@@ -57,8 +57,8 @@ public class RoleController extends BaseController {
 	@PreAuthorize("hasAuthority('sys:role:save')")
 	public Result save(@Validated @RequestBody Role sysRole) {
 
-		sysRole.setCreated(LocalDateTime.now());
-		sysRole.setStatu(Const.STATUS_ON);
+		sysRole.setCreateTime(LocalDateTime.now());
+		sysRole.setStatus(Const.STATUS_ON);
 
 		sysRoleService.save(sysRole);
 		return Result.succ(sysRole);
@@ -68,7 +68,7 @@ public class RoleController extends BaseController {
 	@PreAuthorize("hasAuthority('sys:role:update')")
 	public Result update(@Validated @RequestBody Role sysRole) {
 
-		sysRole.setUpdated(LocalDateTime.now());
+		sysRole.setUpdateTime(LocalDateTime.now());
 
 		sysRoleService.updateById(sysRole);
 

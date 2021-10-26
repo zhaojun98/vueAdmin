@@ -69,10 +69,10 @@
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
 						this.$axios.post('/login?'+ qs.stringify(this.loginForm)).then(res => {
-
 							console.log(res)
 
-							const jwt = res.headers['authorization']
+							// const jwt = res.headers['authorization']
+							const jwt = res.data.data.Authorization;
 
 							this.$store.commit('SET_TOKEN', jwt)
 							this.$router.push("/index")
@@ -89,10 +89,6 @@
 			},
 			getCaptcha() {
 				this.$axios.get('/captcha').then(res => {
-
-					console.log("/captcha")
-					console.log(res)
-
 					this.loginForm.token = res.data.data.token
 					this.captchaImg = res.data.data.captchaImg
 					this.loginForm.code = ''

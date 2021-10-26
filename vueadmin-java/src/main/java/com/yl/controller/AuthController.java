@@ -5,6 +5,7 @@ import cn.hutool.core.map.MapUtil;
 import com.google.code.kaptcha.Producer;
 import com.yl.common.lang.Const;
 import com.yl.common.lang.Result;
+import com.yl.common.log.MyLog;
 import com.yl.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,8 @@ public class AuthController extends BaseController{
 	@Autowired
 	Producer producer;
 
+
+	@MyLog(value = "获取验证码")
 	@GetMapping("/captcha")
 	public Result captcha() throws IOException {
 
@@ -30,8 +33,8 @@ public class AuthController extends BaseController{
 		String code = producer.createText();
 
 		// 为了测试
-		key = "aaaaa";
-		code = "11111";
+//		key = "aaaaa";
+//		code = "11111";
 
 		BufferedImage image = producer.createImage(code);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -67,7 +70,7 @@ public class AuthController extends BaseController{
 				.put("id", sysUser.getId())
 				.put("username", sysUser.getUsername())
 				.put("avatar", sysUser.getAvatar())
-				.put("created", sysUser.getCreated())
+				.put("createTime", sysUser.getCreateTime())
 				.map()
 		);
 	}

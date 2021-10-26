@@ -23,7 +23,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
 		ServletOutputStream outputStream = response.getOutputStream();
 
-		Result result = Result.fail(accessDeniedException.getMessage());
+		Result result = Result.fail(accessDeniedException.getMessage());			//接口返回，捕获的异常信息
 
 		outputStream.write(JSONUtil.toJsonStr(result).getBytes("UTF-8"));
 

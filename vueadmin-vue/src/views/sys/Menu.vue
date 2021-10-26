@@ -58,11 +58,11 @@
 					label="排序号">
 			</el-table-column>
 			<el-table-column
-					prop="statu"
+					prop="status"
 					label="状态">
 				<template slot-scope="scope">
-					<el-tag size="small" v-if="scope.row.statu === 1" type="success">正常</el-tag>
-					<el-tag size="small" v-else-if="scope.row.statu === 0" type="danger">禁用</el-tag>
+					<el-tag size="small" v-if="scope.row.status === 1" type="success">正常</el-tag>
+					<el-tag size="small" v-else-if="scope.row.status === 0" type="danger">禁用</el-tag>
 				</template>
 
 			</el-table-column>
@@ -135,8 +135,8 @@
 					</el-radio-group>
 				</el-form-item>
 
-				<el-form-item label="状态" prop="statu" label-width="100px">
-					<el-radio-group v-model="editForm.statu">
+				<el-form-item label="状态" prop="status" label-width="100px">
+					<el-radio-group v-model="editForm.status">
 						<el-radio :label=0>禁用</el-radio>
 						<el-radio :label=1>正常</el-radio>
 					</el-radio-group>
@@ -185,7 +185,7 @@
 					orderNum: [
 						{required: true, message: '请填入排序号', trigger: 'blur'}
 					],
-					statu: [
+					status: [
 						{required: true, message: '请选择状态', trigger: 'blur'}
 					]
 				},

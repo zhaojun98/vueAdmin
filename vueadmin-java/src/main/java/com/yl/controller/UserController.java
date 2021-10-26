@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yl.common.dto.PassDto;
 import com.yl.common.lang.Const;
 import com.yl.common.lang.Result;
+import com.yl.common.log.MyLog;
 import com.yl.entity.Role;
 import com.yl.entity.User;
 import com.yl.entity.UserRole;
@@ -66,8 +67,8 @@ public class UserController extends BaseController {
 	@PreAuthorize("hasAuthority('sys:user:save')")
 	public Result save(@Validated @RequestBody User sysUser) {
 
-		sysUser.setCreated(LocalDateTime.now());
-		sysUser.setStatu(Const.STATUS_ON);
+		sysUser.setCreateTime(LocalDateTime.now());
+		sysUser.setStatus(Const.STATUS_ON);
 
 		// 默认密码
 		String password = passwordEncoder.encode(Const.DEFULT_PASSWORD);
@@ -84,7 +85,7 @@ public class UserController extends BaseController {
 	@PreAuthorize("hasAuthority('sys:user:update')")
 	public Result update(@Validated @RequestBody User sysUser) {
 
-		sysUser.setUpdated(LocalDateTime.now());
+		sysUser.setUpdateTime(LocalDateTime.now());
 
 		sysUserService.updateById(sysUser);
 		return Result.succ(sysUser);
@@ -126,6 +127,7 @@ public class UserController extends BaseController {
 		return Result.succ("");
 	}
 
+	@MyLog(value = "重置密码")
 	@PostMapping("/repass")
 	@PreAuthorize("hasAuthority('sys:user:repass')")
 	public Result repass(@RequestBody Long userId) {
@@ -133,7 +135,7 @@ public class UserController extends BaseController {
 		User sysUser = sysUserService.getById(userId);
 
 		sysUser.setPassword(passwordEncoder.encode(Const.DEFULT_PASSWORD));
-		sysUser.setUpdated(LocalDateTime.now());
+		sysUser.setUpdateTime(LocalDateTime.now());
 
 		sysUserService.updateById(sysUser);
 		return Result.succ("");
@@ -150,7 +152,7 @@ public class UserController extends BaseController {
 		}
 
 		sysUser.setPassword(passwordEncoder.encode(passDto.getPassword()));
-		sysUser.setUpdated(LocalDateTime.now());
+		sysUser.setUpdateTime(LocalDateTime.now());
 
 		sysUserService.updateById(sysUser);
 		return Result.succ("");

@@ -2,9 +2,13 @@ package com.yl.security;
 
 import cn.hutool.json.JSONUtil;
 import com.yl.common.lang.Result;
+import com.yl.entity.Log;
+import com.yl.service.LogService;
+import com.yl.utils.IpUtiles;
 import com.yl.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +17,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +26,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	@Autowired
 	JwtUtils jwtUtils;
+
+	@Autowired
+	private LogService logService;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -32,9 +40,17 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		AccountUser principal = (AccountUser)authentication.getPrincipal();
 		Map<String, Object> map = new HashMap<>();
 		map.put("principal",principal);
-		map.put("token",jwt);
+		map.put("Authorization",jwt);
 
 		response.setHeader(jwtUtils.getHeader(), jwt);
+		Log sysLog=new Log();
+		sysLog.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		sysLog.setCreateTime(LocalDateTime.now());
+		sysLog.setIp(IpUtiles.getRealIp(request));
+		sysLog.setOperation("登陆成功");
+		sysLog.setMethod("login");
+		logService.save(sysLog);
+
 
 		Result result = Result.succ(map);
 
