@@ -3,8 +3,11 @@ package com.yl.utils;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 获取Ip地址工具类
- * */
+ * @author ：jerry
+ * @date ：Created in 2021/10/26 下午2:37
+ * @description：获取Ip地址工具类
+ * @version: V1.1
+ */
 public class IpUtiles {
     /**
      * 获取真实IP

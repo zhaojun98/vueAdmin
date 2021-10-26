@@ -2,7 +2,7 @@ package com.yl.utils;
 
 
 /**
- * Created by zq2014 on 2018/5/26.
+ * Created by jerry on 2018/5/26.
  */
 public class NumberUtils extends org.apache.commons.lang.math.NumberUtils {
 

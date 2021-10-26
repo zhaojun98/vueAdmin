@@ -18,8 +18,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 菜单
- * */
+ * @author ：jerry
+ * @date ：Created in 2021/10/26 下午2:37
+ * @description：菜单
+ * @version: V1.1
+ */
 @RestController
 @RequestMapping("/sys/menu")
 public class MenuController extends BaseController {

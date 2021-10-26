@@ -25,10 +25,11 @@ import static com.yl.service.impl.FileServiceImpl.ROOT;
 
 
 /**
- * @author jialong
- * @date 2021/05/31
- * @description: 文件
- **/
+ * @author ：jerry
+ * @date ：Created in 2021/10/26 下午2:37
+ * @description：文件
+ * @version: V1.1
+ */
 
 @RestController
 @RequestMapping("/file")

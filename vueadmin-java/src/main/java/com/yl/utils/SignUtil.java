@@ -13,7 +13,7 @@ import java.util.*;
 
 
 /**
- * @author zeming.fan@swiftpass.cn
+ * @author jerry
  *
  */
 public class SignUtil {

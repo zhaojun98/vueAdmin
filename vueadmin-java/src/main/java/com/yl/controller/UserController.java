@@ -26,8 +26,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 用户
- * */
+ * @author ：jerry
+ * @date ：Created in 2021/10/26 下午2:37
+ * @description：用户
+ * @version: V1.1
+ */
+
 @RestController
 @RequestMapping("/sys/user")
 public class UserController extends BaseController {

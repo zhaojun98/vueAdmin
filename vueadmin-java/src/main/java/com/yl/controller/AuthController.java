@@ -18,6 +18,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.Principal;
 
+/**
+ * @author ：jerry
+ * @date ：Created in 2021/10/26 下午2:37
+ * @description：用户信息
+ * @version: V1.1
+ */
+
 @RestController
 public class AuthController extends BaseController{
 

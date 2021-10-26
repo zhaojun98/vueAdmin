@@ -12,12 +12,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 /**
- * <p>
- * 
- * </p>
- *
- * @author 我的公众号：MarkerHub
- * @since 2021-04-05
+ * @author ：jerry
+ * @date ：Created in 2021/10/26 下午2:37
+ * @description：用户
+ * @version: V1.1
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

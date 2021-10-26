@@ -21,8 +21,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 角色
- * */
+ * @author ：jerry
+ * @date ：Created in 2021/10/26 下午2:37
+ * @description：角色
+ * @version: V1.1
+ */
 @RestController
 @RequestMapping("/sys/role")
 public class RoleController extends BaseController {

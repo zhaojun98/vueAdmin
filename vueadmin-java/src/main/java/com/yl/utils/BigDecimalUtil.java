@@ -3,7 +3,7 @@ package com.yl.utils;
 import java.math.BigDecimal;
 
 /**
- * Created by hujoey on 16/4/17.
+ * Created by jerry on 16/4/17.
  */
 public class BigDecimalUtil {
 

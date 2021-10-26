@@ -6,12 +6,10 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 /**
- * <p>
- * 
- * </p>
- *
- * @author 我的公众号：MarkerHub
- * @since 2021-04-05
+ * @author ：jerry
+ * @date ：Created in 2021/10/26 下午2:37
+ * @description：菜单角色
+ * @version: V1.1
  */
 @Data
 public class RoleMenu {

@@ -13,6 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+/**
+ * @author ：jerry
+ * @date ：Created in 2021/10/26 下午2:37
+ * @description：系统日志
+ * @version: V1.1
+ */
+
 @RestController
 @RequestMapping("/sys/log")
 public class LogController {
