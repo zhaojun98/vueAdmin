@@ -7,6 +7,14 @@ spring:
     url: jdbc:mysql://localhost:3306/vueadmin?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
     password: zhaojun98
+
+#邮件服务
+  mail:
+    host: smtp.163.com
+    username: 13698274091@163.com   #发送者邮箱
+    password: USTIUSIHQuuKUNJ      #授权密码
+    default-encoding: UTF-8
+
   redis:
     host: 127.0.0.1
     port: 6379

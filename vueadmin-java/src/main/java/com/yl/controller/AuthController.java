@@ -3,12 +3,16 @@ package com.yl.controller;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.map.MapUtil;
 import com.google.code.kaptcha.Producer;
+import com.yl.common.dto.MailDto;
 import com.yl.common.lang.Const;
 import com.yl.common.lang.Result;
 import com.yl.common.log.MyLog;
 import com.yl.entity.User;
+import com.yl.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import sun.misc.BASE64Encoder;
 
@@ -31,6 +35,8 @@ public class AuthController extends BaseController{
 	@Autowired
 	Producer producer;
 
+	@Autowired
+	private MailUtil mailUtil;			//邮箱工具类
 
 	@MyLog(value = "获取验证码")
 	@GetMapping("/captcha")
@@ -38,10 +44,6 @@ public class AuthController extends BaseController{
 
 		String key = UUID.randomUUID().toString();
 		String code = producer.createText();
-
-		// 为了测试
-//		key = "aaaaa";
-//		code = "11111";
 
 		BufferedImage image = producer.createImage(code);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -80,6 +82,20 @@ public class AuthController extends BaseController{
 				.put("createTime", sysUser.getCreateTime())
 				.map()
 		);
+	}
+
+
+	/**
+	 * 邮件发送接口
+	 * */
+	@PostMapping("/send")
+	public Result sendMsg(@RequestBody MailDto mail){
+		try {
+			mailUtil.sendSimpleMail(mail);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Result.succ("");
 	}
 
 
