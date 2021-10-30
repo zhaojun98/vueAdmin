@@ -41,7 +41,7 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
-    @MyLog(value = "文件上传")
+
     @PostMapping(value = "/upload")
     public Result upload(HttpServletRequest request) throws IOException, ErrorException {
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("files");
@@ -57,13 +57,13 @@ public class FileController {
         throw new ErrorException("路径和文件名错误");
     }
 
-    @MyLog(value = "文件删除")
+//    @MyLog(value = "文件删除")
     @GetMapping(value = "/delete/{filename}")
     public Result delete(@PathVariable("filename") String filename) throws IOException {
         return Result.succ(fileService.deleteFile(filename));
     }
 
-    @MyLog(value = "批量删除文件")
+//    @MyLog(value = "批量删除文件")
     @GetMapping(value = "/deleteBatch")
     public Result delete(@RequestParam("filenames") List<String> filenames) throws IOException {
         fileService.deleteFiles(filenames);
