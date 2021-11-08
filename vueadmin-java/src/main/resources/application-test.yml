@@ -19,7 +19,7 @@ spring:
     host: 127.0.0.1
     port: 6379
     timeout: 5000
-    password: 123123
+    password: zhaojun98
     #redis数据库索引，默认0
     database: 0
     pool:
