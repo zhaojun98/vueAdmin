@@ -1,37 +1,40 @@
 package com.yl.utils;
 
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
+import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.*;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import org.apache.commons.io.IOUtils;
 
 /**
  * @author ：jerry
@@ -39,7 +42,21 @@ import java.util.Map;
  * @description：http 请求工具类
  * @version: V1.1
  */
+@Slf4j
 public abstract class HttpClientUtils {
+
+    public  final int connTimeout = 100000;
+    public  final int readTimeout = 100000;
+    public  final int connectionRequestTimeout = 100000;
+    public  final String charset = "UTF-8";
+
+    public static HttpClient client = null;
+    {
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+        cm.setMaxTotal(128);
+        cm.setDefaultMaxPerRoute(128);
+        client = HttpClients.custom().setConnectionManager(cm).build();
+    }
 
     public static Map<String, List<String>> convertHeaders(Header[] headers) {
         Map<String, List<String>> results = new HashMap<String, List<String>>();
@@ -56,16 +73,17 @@ public abstract class HttpClientUtils {
 
     /**
      * http的get请求
+     *
      * @param url
      */
     public static String get(String url) {
         return get(url, "UTF-8");
     }
 
-    public static Logger logger = LoggerFactory.getLogger(HttpClientUtils.class);
 
     /**
      * http的get请求
+     *
      * @param url
      */
     public static String get(String url, String charset) {
@@ -73,12 +91,109 @@ public abstract class HttpClientUtils {
         return executeRequest(httpGet, charset);
     }
 
+
     /**
-     * http的get请求，增加异步请求头参数
-     * @param url
-     */
-    public static String ajaxGet(String url) {
-        return ajaxGet(url, "UTF-8");
+     * post 请求form表单的形式
+     * */
+    public String postForm(String url, Map<String, Object> params, HttpClientContext context)
+            throws ConnectTimeoutException, SocketTimeoutException, Exception {
+        return postParameters(url, params, null, connTimeout, readTimeout, context);
+    }
+    public  String postParameters(String url, Map<String, Object> params, Map<String, String> headers,
+                            Integer connTimeout, Integer readTimeout, HttpClientContext context)
+            throws ConnectTimeoutException, SocketTimeoutException, Exception {
+        HttpClient client = null;
+        HttpPost post = new HttpPost(url);
+        try {
+            if (params != null && !params.isEmpty()) {
+                List<NameValuePair> formParams = new ArrayList<org.apache.http.NameValuePair>();
+                Set<Map.Entry<String, Object>> entrySet = params.entrySet();
+                for (Map.Entry<String, Object> entry : entrySet) {
+                    formParams.add(new BasicNameValuePair(entry.getKey(), entry.getValue().toString()));
+                }
+                UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formParams, Consts.UTF_8);
+                post.setEntity(entity);
+            }
+
+            if (headers != null && !headers.isEmpty()) {
+                for (Map.Entry<String, String> entry : headers.entrySet()) {
+                    post.addHeader(entry.getKey(), entry.getValue());
+                }
+            }
+            // 设置参数
+            RequestConfig.Builder customReqConf = RequestConfig.custom();
+            if (connTimeout != null) {
+                customReqConf.setConnectTimeout(connTimeout);
+                customReqConf.setConnectionRequestTimeout(connectionRequestTimeout);
+            }
+            if (readTimeout != null) {
+                customReqConf.setSocketTimeout(readTimeout);
+            }
+            post.setConfig(customReqConf.build());
+            HttpResponse res = null;
+            if (url.startsWith("https")) {
+                // 执行 Https 请求.
+                client = createSSLInsecureClient();
+                res = client.execute(post, context);
+            } else {
+                // 执行 Http 请求.
+                client =  this.client;
+                res = client.execute(post, context);
+            }
+            return IOUtils.toString(res.getEntity().getContent(), "utf-8");
+        } finally {
+            post.releaseConnection();
+            if (url.startsWith("https") && client != null && client instanceof CloseableHttpClient) {
+                ((CloseableHttpClient) client).close();
+            }
+        }
+    }
+
+
+    /**
+     * psot请求 JSON传参数
+     * */
+    public  String postJson(String url, JSONObject json, LinkedHashMap<String, String> headers,
+                            HttpClientContext context) throws ConnectTimeoutException, SocketTimeoutException, Exception {
+        return postJSONObj(url, json, headers, context);
+    }
+    public  String postJSONObj(String url, JSONObject json, LinkedHashMap<String, String> headers, HttpClientContext context)
+            throws ConnectTimeoutException, SocketTimeoutException, Exception {
+        HttpClient client = null;
+        client = this.client;
+        HttpPost post = new HttpPost(url);
+        HttpResponse res = null;
+        post.setHeader("Content-Type", "application/json");
+        post.addHeader("Authorization", "Basic YWRtaW46");
+        String result = "";
+        try {
+            StringEntity s = new StringEntity(json.toString(), "utf-8");
+            s.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+            post.setEntity(s);
+            if (headers != null) {
+                for (String key : headers.keySet()) {
+                    post.setHeader(key, headers.get(key));
+                }
+            }
+            // 发送请求
+            if (url.startsWith("https")) {
+                // 执行 Https 请求.
+                client = createSSLInsecureClient();
+                res = client.execute(post, context);
+            } else {
+                // 执行 Http 请求.
+                client = this.client;
+                res = client.execute(post, context);
+            }
+            result = IOUtils.toString(res.getEntity().getContent(), charset);
+        } finally {
+            post.releaseConnection();
+            if (url.startsWith("https") && client != null && client instanceof CloseableHttpClient) {
+                ((CloseableHttpClient) client).close();
+            }
+        }
+        return result;
+
     }
 
     /**
