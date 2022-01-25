@@ -1,11 +1,9 @@
 package com.yl.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.yl.common.JsonLongSerializer;
+import com.yl.config.JsonLongSerializer;
 import lombok.Data;
 
 import java.io.Serializable;
