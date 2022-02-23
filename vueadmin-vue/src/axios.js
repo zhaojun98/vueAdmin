@@ -2,7 +2,7 @@ import axios from "axios";
 import router from "./router";
 import Element from "element-ui"
 
-axios.defaults.baseURL = "http://localhost:8081"
+axios.defaults.baseURL = "http://192.168.0.127:8081"
 
 const request = axios.create({
 	timeout: 5000,
@@ -12,7 +12,9 @@ const request = axios.create({
 })
 
 request.interceptors.request.use(config => {
-	config.headers['Authorization'] = localStorage.getItem("token")
+	// debugger
+	config.headers['Authorization'] = sessionStorage.getItem("token")		//解决token失效的问题
+	// config.headers['Authorization'] = localStorage.getItem("token")
 	return config
 })
 

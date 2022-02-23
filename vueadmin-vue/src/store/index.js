@@ -13,7 +13,8 @@ export default new Vuex.Store({
 
 		SET_TOKEN: (state, token) => {
 			state.token = token
-			localStorage.setItem("token", token)
+			// localStorage.setItem("token", token)
+			sessionStorage.setItem("token", token)		//解决token失效的问题
 		},
 
 

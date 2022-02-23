@@ -69,9 +69,8 @@
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
 						this.$axios.post('/login?'+ qs.stringify(this.loginForm)).then(res => {
-							debugger
 							console.log(res)
-
+							debugger
 							// const jwt = res.headers['authorization']
 							const jwt = res.data.data.Authorization;
 
