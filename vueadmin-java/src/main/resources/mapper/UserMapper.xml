@@ -8,8 +8,9 @@
         FROM
             sys_user_role ur
         LEFT JOIN sys_role_menu rm ON ur.role_id = rm.role_id
+        left join sys_menu m on m.id=rm.menu_id
 
-        WHERE ur.user_id = #{userId}
+        WHERE ur.user_id = #{userId} and m.type!=2
 
     </select>
 
