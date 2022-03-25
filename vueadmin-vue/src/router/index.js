@@ -69,7 +69,8 @@ router.beforeEach((to, from, next) => {
 
 	let hasRoute = store.state.menus.hasRoutes
 
-	let token = localStorage.getItem("token")
+	//let token = localStorage.getItem("token")
+	let token = sessionStorage.getItem("token")
 
 	if (to.path == '/login') {
 		next()
