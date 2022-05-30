@@ -9,6 +9,8 @@ import com.yl.common.lang.Result;
 import com.yl.common.log.MyLog;
 import com.yl.entity.User;
 import com.yl.utils.MailUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +31,7 @@ import java.security.Principal;
  * @version: V1.1
  */
 
+@Api(tags = "用户信息管理")
 @RestController
 public class AuthController extends BaseController{
 
@@ -38,6 +41,7 @@ public class AuthController extends BaseController{
 	@Autowired
 	private MailUtil mailUtil;			//邮箱工具类
 
+	@ApiOperation("获取验证码")
 	@MyLog(value = "获取验证码")
 	@GetMapping("/captcha")
 	public Result captcha() throws IOException {
@@ -70,6 +74,7 @@ public class AuthController extends BaseController{
 	 * @param principal
 	 * @return
 	 */
+	@ApiOperation("获取用户信息接口")
 	@GetMapping("/sys/userInfo")
 	public Result userInfo(Principal principal) {
 
@@ -88,6 +93,7 @@ public class AuthController extends BaseController{
 	/**
 	 * 邮件发送接口
 	 * */
+	@ApiOperation("邮件发送接口")
 	@PostMapping("/send")
 	public Result sendMsg(@RequestBody MailDto mail){
 		try {

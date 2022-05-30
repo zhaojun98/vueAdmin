@@ -11,6 +11,8 @@ import com.yl.common.log.MyLog;
 import com.yl.entity.Role;
 import com.yl.entity.User;
 import com.yl.entity.UserRole;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,6 +34,7 @@ import java.util.List;
  * @version: V1.1
  */
 
+@Api(tags = "用户管理")
 @RestController
 @RequestMapping("/sys/user")
 public class UserController extends BaseController {
@@ -39,6 +42,7 @@ public class UserController extends BaseController {
 	@Autowired
 	BCryptPasswordEncoder passwordEncoder;
 
+	@ApiOperation("用户id查询用户信息")
 	@GetMapping("/info/{id}")
 	@PreAuthorize("hasAuthority('sys:user:list')")
 	public Result info(@PathVariable("id") Long id) {
@@ -52,6 +56,7 @@ public class UserController extends BaseController {
 		return Result.succ(sysUser);
 	}
 
+	@ApiOperation("根据用户名查询用户信息")
 	@GetMapping("/list")
 	@PreAuthorize("hasAuthority('sys:user:list')")
 	public Result list(String username) {
@@ -67,6 +72,7 @@ public class UserController extends BaseController {
 		return Result.succ(pageData);
 	}
 
+	@ApiOperation("新增")
 	@PostMapping("/save")
 	@PreAuthorize("hasAuthority('sys:user:save')")
 	public Result save(@Validated @RequestBody User sysUser) {
@@ -85,6 +91,7 @@ public class UserController extends BaseController {
 		return Result.succ(sysUser);
 	}
 
+	@ApiOperation("修改")
 	@PostMapping("/update")
 	@PreAuthorize("hasAuthority('sys:user:update')")
 	public Result update(@Validated @RequestBody User sysUser) {
@@ -95,6 +102,7 @@ public class UserController extends BaseController {
 		return Result.succ(sysUser);
 	}
 
+	@ApiOperation("删除")
 	@Transactional
 	@PostMapping("/delete")
 	@PreAuthorize("hasAuthority('sys:user:delete')")
@@ -106,6 +114,7 @@ public class UserController extends BaseController {
 		return Result.succ("");
 	}
 
+	@ApiOperation("根据用户id删除")
 	@Transactional
 	@PostMapping("/role/{userId}")
 	@PreAuthorize("hasAuthority('sys:user:role')")
@@ -131,6 +140,7 @@ public class UserController extends BaseController {
 		return Result.succ("");
 	}
 
+	@ApiOperation("重置密码")
 	@MyLog(value = "重置密码")
 	@PostMapping("/repass")
 	@PreAuthorize("hasAuthority('sys:user:repass')")

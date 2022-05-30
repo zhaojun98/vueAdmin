@@ -4,6 +4,7 @@ import com.yl.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,11 +17,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
 	@Autowired
 	LoginFailureHandler loginFailureHandler;
@@ -60,13 +63,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			"/logout",
 			"/captcha",
 			"/favicon.ico",
+			"/webjars/**",
+			"/img.icons/**",
+			"/swagger-resources/**",
+			"/v3/api-docs/**",
+			"/swagger-ui/**",
+			"/doc.html",
+
 
 	};
 
 
 	protected void configure(HttpSecurity http) throws Exception {
 		CorsConfigurer<HttpSecurity> httpSecurityLogoutConfigurer = http.cors().configurationSource(CorsConfigurationSource());
-//		http.cors().configurationSource(CorsConfigurationSource();
+//		http.cors().configurationSource(CorsConfigurationSource()
+
 		http.cors().and().csrf().disable()
 
 				// 登录配置
@@ -116,5 +127,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		corsConfiguration.addAllowedMethod("*");	//允许的请求方法，PSOT、GET等
 		((UrlBasedCorsConfigurationSource) source).registerCorsConfiguration("/**",corsConfiguration); //配置允许跨域访问的url
 		return source;
+	}
+
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/**").addResourceLocations(
+				"classpath:/static/");
+		registry.addResourceHandler("swagger-ui.html")
+				.addResourceLocations("classpath:/META-INF/resources/");
+
+		registry.addResourceHandler("/webjars/**")
+				.addResourceLocations("classpath:/META-INF/resources/webjars/");
+		registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
 	}
 }

@@ -9,6 +9,8 @@ import com.yl.common.lang.Result;
 import com.yl.entity.Role;
 import com.yl.entity.RoleMenu;
 import com.yl.entity.UserRole;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -26,10 +28,12 @@ import java.util.stream.Collectors;
  * @description：角色
  * @version: V1.1
  */
+@Api(tags = "角色管理")
 @RestController
 @RequestMapping("/sys/role")
 public class RoleController extends BaseController {
 
+	@ApiOperation("根据角色id查询菜单")
 	@PreAuthorize("hasAuthority('sys:role:list')")
 	@GetMapping("/info/{id}")
 	public Result info(@PathVariable("id") Long id) {
@@ -44,6 +48,7 @@ public class RoleController extends BaseController {
 		return Result.succ(sysRole);
 	}
 
+	@ApiOperation("根据角色名查询")
 	@PreAuthorize("hasAuthority('sys:role:list')")
 	@GetMapping("/list")
 	public Result list(String name) {
@@ -56,6 +61,7 @@ public class RoleController extends BaseController {
 		return Result.succ(pageData);
 	}
 
+	@ApiOperation("新增")
 	@PostMapping("/save")
 	@PreAuthorize("hasAuthority('sys:role:save')")
 	public Result save(@Validated @RequestBody Role sysRole) {
@@ -67,6 +73,7 @@ public class RoleController extends BaseController {
 		return Result.succ(sysRole);
 	}
 
+	@ApiOperation("修改")
 	@PostMapping("/update")
 	@PreAuthorize("hasAuthority('sys:role:update')")
 	public Result update(@Validated @RequestBody Role sysRole) {
@@ -81,6 +88,7 @@ public class RoleController extends BaseController {
 		return Result.succ(sysRole);
 	}
 
+	@ApiOperation("删除")
 	@PostMapping("/delete")
 	@PreAuthorize("hasAuthority('sys:role:delete')")
 	@Transactional

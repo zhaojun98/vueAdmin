@@ -8,6 +8,8 @@ import com.yl.common.lang.Result;
 import com.yl.entity.Menu;
 import com.yl.entity.RoleMenu;
 import com.yl.entity.User;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -23,6 +25,7 @@ import java.util.List;
  * @description：菜单
  * @version: V1.1
  */
+@Api(tags = "菜单管理")
 @RestController
 @RequestMapping("/sys/menu")
 public class MenuController extends BaseController {
@@ -32,6 +35,7 @@ public class MenuController extends BaseController {
 	 * @param principal
 	 * @return
 	 */
+	@ApiOperation("用户当前用户的菜单和权限信息")
 	@GetMapping("/nav")
 	public Result nav(Principal principal) {
 		User sysUser = sysUserService.getByUsername(principal.getName());
@@ -50,12 +54,14 @@ public class MenuController extends BaseController {
 		);
 	}
 
+	@ApiOperation("根据菜单Id查询详情")
 	@GetMapping("/info/{id}")
 	@PreAuthorize("hasAuthority('sys:menu:list')")
 	public Result info(@PathVariable(name = "id") Long id) {
 		return Result.succ(sysMenuService.getById(id));
 	}
 
+	@ApiOperation("列表查询")
 	@GetMapping("/list")
 	@PreAuthorize("hasAuthority('sys:menu:list')")
 	public Result list() {
@@ -64,6 +70,7 @@ public class MenuController extends BaseController {
 		return Result.succ(menus);
 	}
 
+	@ApiOperation("新增")
 	@PostMapping("/save")
 	@PreAuthorize("hasAuthority('sys:menu:save')")
 	public Result save(@Validated @RequestBody Menu sysMenu) {
@@ -74,6 +81,7 @@ public class MenuController extends BaseController {
 		return Result.succ(sysMenu);
 	}
 
+	@ApiOperation("修改")
 	@PostMapping("/update")
 	@PreAuthorize("hasAuthority('sys:menu:update')")
 	public Result update(@Validated @RequestBody Menu sysMenu) {
@@ -87,6 +95,7 @@ public class MenuController extends BaseController {
 		return Result.succ(sysMenu);
 	}
 
+	@ApiOperation("删除")
 	@PostMapping("/delete/{id}")
 	@PreAuthorize("hasAuthority('sys:menu:delete')")
 	public Result delete(@PathVariable("id") Long id) {

@@ -6,8 +6,10 @@ import com.yl.common.lang.Result;
 import com.yl.common.log.MyLog;
 import com.yl.service.FileService;
 import com.yl.utils.FileUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
@@ -31,6 +33,7 @@ import static com.yl.service.impl.FileServiceImpl.ROOT;
  * @version: V1.1
  */
 
+@Api(tags = "文件服务管理")
 @RestController
 @RequestMapping("/file")
 public class FileController {
@@ -42,6 +45,7 @@ public class FileController {
     private FileService fileService;
 
 
+    @ApiOperation("上传")
     @PostMapping(value = "/upload")
     public Result upload(HttpServletRequest request) throws IOException, ErrorException {
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("files");
@@ -58,19 +62,21 @@ public class FileController {
     }
 
 //    @MyLog(value = "文件删除")
+    @ApiOperation("文件删除")
     @GetMapping(value = "/delete/{filename}")
     public Result delete(@PathVariable("filename") String filename) throws IOException {
         return Result.succ(fileService.deleteFile(filename));
     }
 
 //    @MyLog(value = "批量删除文件")
+    @ApiOperation("批量删除文件")
     @GetMapping(value = "/deleteBatch")
     public Result delete(@RequestParam("filenames") List<String> filenames) throws IOException {
         fileService.deleteFiles(filenames);
         return null;
     }
 
-
+    @ApiOperation("查看文件")
     @GetMapping(value = "/show/{filename:.+}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "filename", value = "文件名", required = true, dataType = "String", example = "ok.jpg"),

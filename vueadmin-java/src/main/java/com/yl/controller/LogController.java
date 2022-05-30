@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yl.common.lang.Result;
 import com.yl.entity.Log;
 import com.yl.service.LogService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @version: V1.1
  */
 
+@Api(tags = "操作日志管理")
 @RestController
 @RequestMapping("/sys/log")
 public class LogController {
@@ -31,6 +34,7 @@ public class LogController {
     /**
      * 分页查询
      * */
+    @ApiOperation("列表分页查询")
     @PostMapping("/findList")
     @PreAuthorize("hasAuthority('sys:log:findList')")
     public Result findList(@RequestBody Log log) {

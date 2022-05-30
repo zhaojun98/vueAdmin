@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yl.config.JsonLongSerializer;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,15 +15,19 @@ import java.time.LocalTime;
 public class BaseEntity implements Serializable {
 
 //	@TableId(value = "id", type = IdType.AUTO)
+	@ApiModelProperty("住建Id")
 	@JsonSerialize(using = JsonLongSerializer.class )		//Long类型长度过长，导致精度丢失方案
 	private Long id;
 
+	@ApiModelProperty("创建时间")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private LocalDateTime createTime;				//创建时间
 
+	@ApiModelProperty("更新时间")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private LocalDateTime updateTime;				//更新时间
 
+	@ApiModelProperty("状态")
 	private Integer status;				//状态
 
 	//分页参数
