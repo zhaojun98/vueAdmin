@@ -1,6 +1,7 @@
 package com.yl.utils;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 
 /**
  * Created by jerry on 16/4/17.
@@ -99,5 +100,16 @@ public class BigDecimalUtil {
         System.out.println(fixDoubleNumProfit(0.129999));
         System.out.println(fixDoubleNumProfit(0.12444));
         System.out.println(fixDoubleNumProfit(0.1200001));
+
+
+        NumberFormat currency = NumberFormat.getCurrencyInstance(); //建立货币格式化引用
+        NumberFormat percent = NumberFormat.getPercentInstance();  //建立百分比格式化引用
+        percent.setMaximumFractionDigits(3); //百分比小数点最多3位
+
+        System.out.println("建立货币格式化引用: "+currency.format(new BigDecimal(1234600.67)));
+        String format = percent.format(new BigDecimal(0.2345));
+        System.out.println("建立百分比格式化引用,保留3位小数:"+format);
+
+
     }
 }
