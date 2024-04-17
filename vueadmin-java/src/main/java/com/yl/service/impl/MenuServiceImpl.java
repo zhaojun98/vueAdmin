@@ -1,5 +1,9 @@
 package com.yl.service.impl;
 
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.lang.tree.parser.NodeParser;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yl.common.dto.SysMenuDto;
@@ -20,7 +24,7 @@ import java.util.List;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author 我的公众号：MarkerHub
@@ -29,80 +33,104 @@ import java.util.List;
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
 
-	@Autowired
-	UserService sysUserService;
+    @Autowired
+    UserService sysUserService;
 
-	@Autowired
-	UserMapper sysUserMapper;
+    @Autowired
+    UserMapper sysUserMapper;
 
-	@Override
-	public List<SysMenuDto> getCurrentUserNav() {
-		String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		User sysUser = sysUserService.getByUsername(username);
+    @Autowired
+    MenuMapper menuMapper;
 
-		List<Long> menuIds = sysUserMapper.getNavMenuIds(sysUser.getId());
-		List<Menu> menus = this.listByIds(menuIds);
+    @Override
+    public List<SysMenuDto> getCurrentUserNav() {
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User sysUser = sysUserService.getByUsername(username);
 
-		// 转树状结构
-		List<Menu> menuTree = buildTreeMenu(menus);
+        List<Long> menuIds = sysUserMapper.getNavMenuIds(sysUser.getId());
+        List<Menu> menus = this.listByIds(menuIds);
 
-		// 实体转DTO
-		return convert(menuTree);
-	}
+        // 转树状结构
+        List<Menu> menuTree = buildTreeMenu(menus);
 
-	@Override
-	public List<Menu> tree() {
-		// 获取所有菜单信息
-		List<Menu> sysMenus = this.list(new QueryWrapper<Menu>().orderByAsc("orderNum"));
+        // 实体转DTO
+        return convert(menuTree);
+    }
 
-		// 转成树状结构
-		return buildTreeMenu(sysMenus);
-	}
+    @Override
+    public List<Tree<Long>> tree() {
 
-	private List<SysMenuDto> convert(List<Menu> menuTree) {
-		List<SysMenuDto> menuDtos = new ArrayList<>();
+        //方式一
+        // 获取所有菜单信息
+//        List<Menu> sysMenus = this.list(new QueryWrapper<Menu>().orderByAsc("orderNum"));
+        // 转成树状结构
+        //		return buildTreeMenu(sysMenus);
 
-		menuTree.forEach(m -> {
-			SysMenuDto dto = new SysMenuDto();
 
-			dto.setId(m.getId());
-			dto.setName(m.getPerms());
-			dto.setTitle(m.getName());
-			dto.setComponent(m.getComponent());
-			dto.setPath(m.getPath());
+        //方式二
+        //利用mysql
+        List<Menu> treeList = menuMapper.tree();        //mysql递归查询语法
 
-			if (m.getChildren().size() > 0) {
+        //用hutool工具包转换成数据结构的新方式
+        List<Tree<Long>> build = TreeUtil.build(treeList, 0L, new TreeNodeConfig(),
+                (menu, treeNode) -> {
+                    treeNode.setId(menu.getId());
+                    treeNode.setParentId(menu.getParentId());
+                    treeNode.setName(String.valueOf(menu.getName()));
+                    treeNode.put("path", menu.getPath());
+                    treeNode.put("status", menu.getStatus());
+                    treeNode.put("icon", menu.getIcon());
+                    treeNode.put("component", menu.getComponent());
+                    treeNode.put("perms", menu.getPerms());
+                    treeNode.put("type", menu.getType());
+                    treeNode.put("orderNum", menu.getOrderNum());
+                    treeNode.put("children", menu.getChildren());
+                });
 
-				// 子节点调用当前方法进行再次转换
-				dto.setChildren(convert(m.getChildren()));
-			}
 
-			menuDtos.add(dto);
-		});
+        return build;
 
-		return menuDtos;
-	}
+    }
 
-	private List<Menu> buildTreeMenu(List<Menu> menus) {
+    private List<SysMenuDto> convert(List<Menu> menuTree) {
+        List<SysMenuDto> menuDtos = new ArrayList<>();
 
-		List<Menu> finalMenus = new ArrayList<>();
+        menuTree.forEach(m -> {
+            SysMenuDto dto = new SysMenuDto();
 
-		// 先各自寻找到各自的孩子
-		for (Menu menu : menus) {
+            dto.setId(m.getId());
+            dto.setName(m.getPerms());
+            dto.setTitle(m.getName());
+            dto.setComponent(m.getComponent());
+            dto.setPath(m.getPath());
 
-			for (Menu e : menus) {
-				if (menu.getId() == e.getParentId()) {
-					menu.getChildren().add(e);
-				}
-			}
+            if (m.getChildren().size() > 0) {
 
-			// 提取出父节点
-			if (menu.getParentId() == 0L) {
-				finalMenus.add(menu);
-			}
-		}
+                // 子节点调用当前方法进行再次转换
+                dto.setChildren(convert(m.getChildren()));
+            }
 
-//		System.out.println(JSONUtil.toJsonStr(finalMenus));
-		return finalMenus;
-	}
+            menuDtos.add(dto);
+        });
+
+        return menuDtos;
+    }
+
+    private List<Menu> buildTreeMenu(List<Menu> menus) {
+
+        List<Menu> finalMenus = new ArrayList<>();
+        // 先各自寻找到各自的孩子
+        for (Menu menu : menus) {
+            for (Menu e : menus) {
+                if (menu.getId() == e.getParentId()) {
+                    menu.getChildren().add(e);
+                }
+            }
+            // 提取出父节点
+            if (menu.getParentId() == 0L) {
+                finalMenus.add(menu);
+            }
+        }
+        return finalMenus;
+    }
 }

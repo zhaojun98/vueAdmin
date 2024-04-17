@@ -1,6 +1,7 @@
 package com.yl.controller;
 
 
+import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yl.common.dto.SysMenuDto;
@@ -65,9 +66,8 @@ public class MenuController extends BaseController {
 	@GetMapping("/list")
 	@PreAuthorize("hasAuthority('sys:menu:list')")
 	public Result list() {
-
-		List<Menu> menus = sysMenuService.tree();
-		return Result.succ(menus);
+		List<Tree<Long>> tree = sysMenuService.tree();
+		return Result.succ(tree);
 	}
 
 	@ApiOperation("新增")

@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yl.mapper.SysMenuMapper">
-
+<mapper namespace="com.yl.mapper.MenuMapper">
+    <select id="tree" resultType="com.yl.entity.Menu">
+        WITH RECURSIVE menu_tree AS (
+        SELECT id, name, parent_id,path,perms,component,type,icon,orderNum,create_time,update_time,`status`,1 AS level
+        FROM sys_menu
+        WHERE parent_id=0
+        UNION ALL
+        SELECT m.id, m.name, m.parent_id,m.path,m.perms,m.component,m.type,m.icon,m.orderNum,m.create_time,
+        m.update_time,m.`status` ,mt.level + 1
+        FROM sys_menu m
+        INNER JOIN menu_tree mt ON m.parent_id = mt.id
+        )
+        SELECT id, name, parent_id,path,perms,component,type,icon,orderNum,create_time,
+        update_time,`status`,level FROM menu_tree;
+    </select>
 </mapper>

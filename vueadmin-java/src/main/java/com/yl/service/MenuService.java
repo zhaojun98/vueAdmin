@@ -1,5 +1,6 @@
 package com.yl.service;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.yl.common.dto.SysMenuDto;
 import com.yl.entity.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -10,6 +11,6 @@ public interface MenuService extends IService<Menu> {
 
 	List<SysMenuDto> getCurrentUserNav();
 
-	List<Menu> tree();
+	List<Tree<Long>> tree();
 
 }
