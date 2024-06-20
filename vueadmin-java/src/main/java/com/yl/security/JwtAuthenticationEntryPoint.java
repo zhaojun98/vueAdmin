@@ -1,7 +1,7 @@
 package com.yl.security;
 
 import cn.hutool.json.JSONUtil;
-import com.yl.common.lang.Result;
+import com.yl.common.CommonResultVo;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -22,11 +22,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		ServletOutputStream outputStream = response.getOutputStream();
 
-		String message = authException.getMessage();
-		Result result = Result.fail(message);			//接口返回，捕获的异常信息
-
-		outputStream.write(JSONUtil.toJsonStr(result).getBytes("UTF-8"));
-
+		outputStream.write(JSONUtil.toJsonStr(CommonResultVo.failed(authException.getMessage())).getBytes("UTF-8"));
 		outputStream.flush();
 		outputStream.close();
 	}

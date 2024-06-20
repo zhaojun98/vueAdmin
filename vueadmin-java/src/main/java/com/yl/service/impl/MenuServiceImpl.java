@@ -3,13 +3,10 @@ package com.yl.service.impl;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
-import cn.hutool.core.lang.tree.parser.NodeParser;
-import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.yl.common.dto.SysMenuDto;
-import com.yl.entity.Menu;
+import com.yl.model.dto.SysMenuDto;
+import com.yl.model.entity.Menu;
 
-import com.yl.entity.User;
+import com.yl.model.entity.User;
 import com.yl.mapper.MenuMapper;
 import com.yl.mapper.UserMapper;
 import com.yl.service.MenuService;
@@ -22,14 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * <p>
- * 服务实现类
- * </p>
- *
- * @author 我的公众号：MarkerHub
- * @since 2021-09-023
- */
+
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
 
@@ -58,7 +48,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Override
-    public List<Tree<Long>> tree() {
+    public List<Tree<String>> tree() {
 
         //方式一
         // 获取所有菜单信息
@@ -70,12 +60,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         //方式二
         //利用mysql
         List<Menu> treeList = menuMapper.tree();        //mysql递归查询语法
-
+        //todo ID转Strung,应为Long过长类型传前端精度丢失
         //用hutool工具包转换成数据结构的新方式
-        List<Tree<Long>> build = TreeUtil.build(treeList, 0L, new TreeNodeConfig(),
+        List<Tree<String>> build = TreeUtil.build(treeList, "0", new TreeNodeConfig(),
                 (menu, treeNode) -> {
-                    treeNode.setId(menu.getId());
-                    treeNode.setParentId(menu.getParentId());
+                    treeNode.setId(menu.getId()+"");
+                    treeNode.setParentId(menu.getParentId()+"");
                     treeNode.setName(String.valueOf(menu.getName()));
                     treeNode.put("path", menu.getPath());
                     treeNode.put("status", menu.getStatus());

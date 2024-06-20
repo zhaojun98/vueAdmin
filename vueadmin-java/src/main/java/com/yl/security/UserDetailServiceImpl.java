@@ -1,6 +1,6 @@
 package com.yl.security;
 
-import com.yl.entity.User;
+import com.yl.model.entity.User;
 import com.yl.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

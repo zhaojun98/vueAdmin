@@ -1,9 +1,8 @@
 package com.yl.controller;
 
 
+import com.yl.common.CommonResultVo;
 import com.yl.common.ErrorException;
-import com.yl.common.lang.Result;
-import com.yl.common.log.MyLog;
 import com.yl.service.FileService;
 import com.yl.utils.FileUtil;
 import io.swagger.annotations.Api;
@@ -20,6 +19,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class FileController {
 
     @ApiOperation("上传")
     @PostMapping(value = "/upload")
-    public Result upload(HttpServletRequest request) throws IOException, ErrorException {
+    public CommonResultVo upload(HttpServletRequest request) throws IOException, ErrorException {
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("files");
         StringBuilder address = new StringBuilder();
         if (files != null && files.size() > 0) {
@@ -56,7 +56,7 @@ public class FileController {
             }
         }
         if (address.length() > 0) {
-            return Result.succ((Object) address.substring(0, address.length() - 1));
+            return CommonResultVo.success((Object) address.substring(0, address.length() - 1));
         }
         throw new ErrorException("路径和文件名错误");
     }
@@ -64,14 +64,14 @@ public class FileController {
 //    @MyLog(value = "文件删除")
     @ApiOperation("文件删除")
     @GetMapping(value = "/delete/{filename}")
-    public Result delete(@PathVariable("filename") String filename) throws IOException {
-        return Result.succ(fileService.deleteFile(filename));
+    public CommonResultVo delete(@PathVariable("filename") String filename) throws IOException {
+        return CommonResultVo.success(fileService.deleteFile(filename));
     }
 
 //    @MyLog(value = "批量删除文件")
     @ApiOperation("批量删除文件")
     @GetMapping(value = "/deleteBatch")
-    public Result delete(@RequestParam("filenames") List<String> filenames) throws IOException {
+    public CommonResultVo delete(@RequestParam("filenames") List<String> filenames) throws IOException {
         fileService.deleteFiles(filenames);
         return null;
     }
@@ -109,7 +109,7 @@ public class FileController {
             } else {
                 response.setHeader("content-type", "application/octet-stream");
                 response.setContentType("application/octet-stream");
-                response.setHeader("Content-Disposition", "attachment;filename=" + filename);
+                response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(filename));
             }
             response.getOutputStream().write(bos.toByteArray());
         } catch (IOException e) {

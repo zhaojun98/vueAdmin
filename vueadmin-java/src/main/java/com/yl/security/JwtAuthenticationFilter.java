@@ -1,8 +1,7 @@
 package com.yl.security;
 
 import cn.hutool.core.util.StrUtil;
-
-import com.yl.entity.User;
+import com.yl.model.entity.User;
 import com.yl.service.UserService;
 import com.yl.utils.JwtUtils;
 import io.jsonwebtoken.Claims;

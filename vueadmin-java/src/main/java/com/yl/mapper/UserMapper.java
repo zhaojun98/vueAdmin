@@ -1,7 +1,8 @@
 package com.yl.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yl.entity.User;
+import com.yl.model.entity.User;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.yl.security;
 
 import cn.hutool.json.JSONUtil;
-import com.yl.common.lang.Result;
+import com.yl.common.CommonResultVo;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
@@ -23,9 +23,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
 		ServletOutputStream outputStream = response.getOutputStream();
 
-		Result result = Result.fail(accessDeniedException.getMessage());			//接口返回，捕获的异常信息
-
-		outputStream.write(JSONUtil.toJsonStr(result).getBytes("UTF-8"));
+		outputStream.write(JSONUtil.toJsonStr(CommonResultVo.failed(accessDeniedException.getMessage())).getBytes("UTF-8"));
 
 		outputStream.flush();
 		outputStream.close();

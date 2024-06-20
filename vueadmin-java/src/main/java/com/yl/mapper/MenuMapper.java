@@ -1,6 +1,6 @@
 package com.yl.mapper;
 
-import com.yl.entity.Menu;
+import com.yl.model.entity.Menu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;

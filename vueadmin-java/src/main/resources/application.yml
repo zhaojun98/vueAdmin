@@ -1,4 +1,26 @@
 spring:
+  main:
+    allow-circular-references: true
+    allow-bean-definition-overriding: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   profiles:
-      active: dev
+    #    active: prod
+    active: dev
 #    active: test
+
+
+#白名单
+ignore:
+  whites:
+    - /login
+    - /logout
+    - /captcha
+    - /favicon.ico
+    - /webjars/**
+    - /img.icons/**
+    - /swagger-resources/**
+    - /v3/api-docs/**
+    - /swagger-ui/**
+    - /doc.html

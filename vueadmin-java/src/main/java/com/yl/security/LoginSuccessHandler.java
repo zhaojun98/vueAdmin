@@ -1,8 +1,8 @@
 package com.yl.security;
 
 import cn.hutool.json.JSONUtil;
-import com.yl.common.lang.Result;
-import com.yl.entity.Log;
+import com.yl.common.CommonResultVo;
+import com.yl.model.entity.Log;
 import com.yl.service.LogService;
 import com.yl.utils.IpUtiles;
 import com.yl.utils.JwtUtils;
@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +38,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		String jwt = jwtUtils.generateToken(authentication.getName());
 		AccountUser principal = (AccountUser)authentication.getPrincipal();
 		Map<String, Object> map = new HashMap<>();
-		map.put("principal",principal);
+		map.put("username",principal.getUsername());
 		map.put("Authorization",jwt);
 
 		response.setHeader(jwtUtils.getHeader(), jwt);
@@ -51,11 +50,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		sysLog.setMethod("login");
 		logService.save(sysLog);
 
-
-		Result result = Result.succ(map);
-
-		outputStream.write(JSONUtil.toJsonStr(result).getBytes("UTF-8"));
-
+		outputStream.write(JSONUtil.toJsonStr(CommonResultVo.success(map)).getBytes("UTF-8"));
 		outputStream.flush();
 		outputStream.close();
 	}

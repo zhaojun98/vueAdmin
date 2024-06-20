@@ -57,9 +57,9 @@ markerhub:
     secret: ji8n3439n439n43ld9ne9343fdfer49h
 
 #swagger文档开启/关闭
-springfox:
-  documentation:
-    auto-startup: true
+swagger:
+  apiProfile:
+    path: /
 #knife4j
 knife4j:
   production: false # 开启/屏蔽文档资源

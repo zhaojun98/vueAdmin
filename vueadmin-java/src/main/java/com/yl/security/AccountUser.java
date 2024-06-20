@@ -1,11 +1,15 @@
 package com.yl.security;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
 import java.util.Collection;
 
+@Getter
+@Setter
 public class AccountUser implements UserDetails {
 
 	private Long userId;
@@ -33,7 +37,7 @@ public class AccountUser implements UserDetails {
 	            boolean credentialsNonExpired, boolean accountNonLocked,
 	            Collection<? extends GrantedAuthority> authorities) {
 		Assert.isTrue(username != null && !"".equals(username) && password != null,
-				"Cannot pass null or empty values to constructor");
+				"无法将 null 值或空值传递给构造函数");
 		this.userId = userId;
 		this.username = username;
 		this.password = password;
@@ -45,38 +49,4 @@ public class AccountUser implements UserDetails {
 	}
 
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return this.authorities;
-	}
-
-	@Override
-	public String getPassword() {
-		return this.password;
-	}
-
-	@Override
-	public String getUsername() {
-		return this.username;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return this.accountNonExpired;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return this.accountNonLocked;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return this.credentialsNonExpired;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return this.enabled;
-	}
 }

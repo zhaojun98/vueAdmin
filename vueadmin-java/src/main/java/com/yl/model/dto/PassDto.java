@@ -1,4 +1,4 @@
-package com.yl.common.dto;
+package com.yl.model.dto;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.yl.entity;
+package com.yl.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;

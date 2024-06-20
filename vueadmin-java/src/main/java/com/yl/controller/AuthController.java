@@ -3,21 +3,23 @@ package com.yl.controller;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.map.MapUtil;
 import com.google.code.kaptcha.Producer;
-import com.yl.common.dto.MailDto;
+import com.yl.common.CommonResultVo;
+import com.yl.model.dto.MailDto;
 import com.yl.common.lang.Const;
-import com.yl.common.lang.Result;
 import com.yl.common.log.MyLog;
-import com.yl.entity.User;
+import com.yl.model.entity.User;
+import com.yl.service.UserService;
 import com.yl.utils.MailUtil;
+import com.yl.utils.RedisTools;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import sun.misc.BASE64Encoder;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -33,18 +35,24 @@ import java.security.Principal;
 
 @Api(tags = "用户信息管理")
 @RestController
-public class AuthController extends BaseController{
+public class AuthController{
 
-	@Autowired
+	@Resource
 	Producer producer;
 
-	@Autowired
+	@Resource
 	private MailUtil mailUtil;			//邮箱工具类
+
+	@Resource
+	UserService userService;
+
+	@Resource
+	RedisTools redisTools;
 
 	@ApiOperation("获取验证码")
 	@MyLog(value = "获取验证码")
 	@GetMapping("/captcha")
-	public Result captcha() throws IOException {
+	public CommonResultVo captcha() throws IOException {
 
 		String key = UUID.randomUUID().toString();
 		String code = producer.createText();
@@ -58,9 +66,9 @@ public class AuthController extends BaseController{
 
 		String base64Img = str + encoder.encode(outputStream.toByteArray());
 
-		redisUtil.hset(Const.CAPTCHA_KEY, key, code, 120);
+		redisTools.hset(Const.CAPTCHA_KEY, key, code, 120);
 
-		return Result.succ(
+		return CommonResultVo.success(
 				MapUtil.builder()
 						.put("token", key)
 						.put("captchaImg", base64Img)
@@ -76,11 +84,11 @@ public class AuthController extends BaseController{
 	 */
 	@ApiOperation("获取用户信息接口")
 	@GetMapping("/sys/userInfo")
-	public Result userInfo(Principal principal) {
+	public CommonResultVo userInfo(Principal principal) {
 
-		User sysUser = sysUserService.getByUsername(principal.getName());
+		User sysUser = userService.getByUsername(principal.getName());
 
-		return Result.succ(MapUtil.builder()
+		return CommonResultVo.success(MapUtil.builder()
 				.put("id", sysUser.getId())
 				.put("username", sysUser.getUsername())
 				.put("avatar", sysUser.getAvatar())
@@ -95,13 +103,13 @@ public class AuthController extends BaseController{
 	 * */
 	@ApiOperation("邮件发送接口")
 	@PostMapping("/send")
-	public Result sendMsg(@RequestBody MailDto mail){
+	public CommonResultVo sendMsg(@RequestBody MailDto mail){
 		try {
 			mailUtil.sendSimpleMail(mail);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return Result.succ("");
+		return CommonResultVo.success("");
 	}
 
 

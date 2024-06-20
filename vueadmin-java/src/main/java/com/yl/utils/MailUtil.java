@@ -1,6 +1,6 @@
 package com.yl.utils;
 
-import com.yl.common.dto.MailDto;
+import com.yl.model.dto.MailDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

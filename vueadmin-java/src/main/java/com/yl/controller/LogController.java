@@ -3,8 +3,9 @@ package com.yl.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.yl.common.lang.Result;
-import com.yl.entity.Log;
+
+import com.yl.common.CommonResultVo;
+import com.yl.model.entity.Log;
 import com.yl.service.LogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,10 +38,7 @@ public class LogController {
     @ApiOperation("列表分页查询")
     @PostMapping("/findList")
     @PreAuthorize("hasAuthority('sys:log:findList')")
-    public Result findList(@RequestBody Log log) {
-        QueryWrapper<Log> qw = new QueryWrapper<>();
-        qw.orderByDesc("create_time");
-        Page<Log> page = logService.page(new Page<>(log.getCurrent(), log.getSize()),qw);
-        return Result.succ(page);
+    public CommonResultVo pageList(@RequestBody Log log) {
+        return CommonResultVo.success(logService.pageList(log));
     }
 }

@@ -2,6 +2,7 @@ package com.yl.config;
 
 import com.yl.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +20,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -46,6 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 	@Autowired
 	JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
 
+	@Autowired
+	IgnoreWhitesConfig ignoreWhites;
+
 	@Bean
 	JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
 		JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager());
@@ -57,35 +63,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 		return new BCryptPasswordEncoder();
 	}
 
-	private static final String[] URL_WHITELIST = {
-
-			"/login",
-			"/logout",
-			"/captcha",
-			"/favicon.ico",
-			"/webjars/**",
-			"/img.icons/**",
-			"/swagger-resources/**",
-			"/v3/api-docs/**",
-			"/swagger-ui/**",
-			"/doc.html",
-
-
-	};
 
 
 	protected void configure(HttpSecurity http) throws Exception {
-		CorsConfigurer<HttpSecurity> httpSecurityLogoutConfigurer = http.cors().configurationSource(CorsConfigurationSource());
-//		http.cors().configurationSource(CorsConfigurationSource()
 
-		http.cors().and().csrf().disable()
+		http.cors()
+				.configurationSource(corsConfigurationSource())        //跨域配置
+				.and().csrf().disable()
 
 				// 登录配置
 				.formLogin()
 				.successHandler(loginSuccessHandler)
 				.failureHandler(loginFailureHandler)
-
 				.and()
+				// 登出配置
 				.logout()
 				.logoutSuccessHandler(jwtLogoutSuccessHandler)
 
@@ -97,7 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 				// 配置拦截规则
 				.and()
 				.authorizeRequests()
-				.antMatchers(URL_WHITELIST).permitAll()
+				.antMatchers( ignoreWhites.getWhites()).permitAll()
 				.anyRequest().authenticated()
 
 				// 异常处理器
@@ -110,8 +101,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 				.and()
 				.addFilter(jwtAuthenticationFilter())
 				.addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class);
-
-
 	}
 
 	@Override
@@ -119,15 +108,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 		auth.userDetailsService(userDetailService);
 	}
 
-	private CorsConfigurationSource CorsConfigurationSource() {
-		CorsConfigurationSource source =   new UrlBasedCorsConfigurationSource();
-		CorsConfiguration corsConfiguration = new CorsConfiguration();
-		corsConfiguration.addAllowedOrigin("*");	//同源配置，*表示任何请求都视为同源，若需指定ip和端口可以改为如“localhost：8080”，多个以“，”分隔；
-		corsConfiguration.addAllowedHeader("*");//header，允许哪些header，本案中使用的是token，此处可将*替换为token；
-		corsConfiguration.addAllowedMethod("*");	//允许的请求方法，PSOT、GET等
-		((UrlBasedCorsConfigurationSource) source).registerCorsConfiguration("/**",corsConfiguration); //配置允许跨域访问的url
+
+	/**
+	 * 跨域具体处理
+	 */
+	private CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+//		configuration.setAllowedOrigins(Arrays.asList("*"));
+		configuration.addAllowedOriginPattern("*");//替换这个
+//		configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedHeaders(Arrays.asList("*"));
+		configuration.setAllowCredentials(true);
+		configuration.setMaxAge(3600L);
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
+
+
 
 	@Bean
 	@Override

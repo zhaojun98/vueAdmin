@@ -1,4 +1,4 @@
-package com.yl.entity;
+package com.yl.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;

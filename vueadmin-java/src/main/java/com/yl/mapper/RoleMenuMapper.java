@@ -1,6 +1,6 @@
 package com.yl.mapper;
 
-import com.yl.entity.RoleMenu;
+import com.yl.model.entity.RoleMenu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

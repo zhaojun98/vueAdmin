@@ -2,7 +2,7 @@ package com.yl.common.log;
 
 
 import com.alibaba.fastjson.JSON;
-import com.yl.entity.Log;
+import com.yl.model.entity.Log;
 import com.yl.service.LogService;
 import com.yl.utils.IpUtiles;
 import org.aspectj.lang.JoinPoint;
