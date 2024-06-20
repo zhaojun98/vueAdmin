@@ -41,7 +41,7 @@ public class RoleController {
     }
 
     @DeptFilter
-    @ApiOperation("根据角色名查询")
+    @ApiOperation("分页查询")
     @PreAuthorize("hasAuthority('sys:role:list')")
     @GetMapping("/list")
     public CommonResultVo<Page<Role>> pageList(Role role) {
@@ -70,7 +70,7 @@ public class RoleController {
         return CommonResultVo.success();
     }
 
-
+    @ApiOperation("修改角色权限")
     @PostMapping("/perm/{roleId}")
     @PreAuthorize("hasAuthority('sys:role:perm')")
     public CommonResultVo info(@PathVariable("roleId") Long roleId, @RequestBody Long[] menuIds) {

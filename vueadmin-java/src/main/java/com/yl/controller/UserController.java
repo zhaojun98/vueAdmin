@@ -49,7 +49,8 @@ public class UserController {
         return CommonResultVo.success( sysUserService.info(id));
     }
 
-    @ApiOperation("根据用户名查询用户信息")
+
+    @ApiOperation("分页查询")
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('sys:user:list')")
     public CommonResultVo pageList(User user) {
@@ -92,6 +93,7 @@ public class UserController {
         return CommonResultVo.success(sysUserService.repass(userId));
     }
 
+    @ApiOperation("修改密码")
     @PostMapping("/updatePass")
     public CommonResultVo updatePass(@Validated @RequestBody PassDto passDto, Principal principal) {
         sysUserService.updatePass(passDto,principal);

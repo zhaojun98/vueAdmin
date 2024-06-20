@@ -20,6 +20,8 @@ import com.yl.service.UserService;
 import com.yl.utils.RedisTools;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
 	@Resource
@@ -63,7 +66,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 		User sysUser = sysUserMapper.selectById(userId);
 
-		//  ROLE_admin,ROLE_normal,sys:user:list,....
 		String authority = "";
 
 		if (redisTools.hasKey(RedisKeyConstant.GrantedAuthority + sysUser.getUsername())) {
@@ -205,7 +207,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		sysUser.setUpdateTime(LocalDateTime.now());
 
 		boolean b = this.updateById(sysUser);
-//		if(!b) throw new
+		if(!b) throw new CustomException("修改失败");
 
 		return true;
 	}
@@ -223,5 +225,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		sysUser.setUpdateTime(LocalDateTime.now());
 
 		boolean b = this.updateById(sysUser);
+		if(!b) throw new CustomException("修改失败");
 	}
 }

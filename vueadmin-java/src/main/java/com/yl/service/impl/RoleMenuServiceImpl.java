@@ -7,6 +7,8 @@ import com.yl.service.RoleMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yl.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
 public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenu> implements RoleMenuService {
 
     @Resource
