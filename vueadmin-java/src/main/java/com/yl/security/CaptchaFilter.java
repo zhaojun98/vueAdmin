@@ -1,9 +1,9 @@
 package com.yl.security;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.yl.common.exception.CaptchaException;
-import com.yl.common.lang.Const;
-import com.yl.utils.RedisUtil;
+import com.yl.common.exception.CustomException;
+import com.yl.constant.Const;
+import com.yl.utils.RedisTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -18,7 +18,7 @@ import java.io.IOException;
 public class CaptchaFilter extends OncePerRequestFilter {
 
 	@Autowired
-	RedisUtil redisUtil;
+	RedisTools redisTools;
 
 	@Autowired
 	LoginFailureHandler loginFailureHandler;
@@ -34,7 +34,7 @@ public class CaptchaFilter extends OncePerRequestFilter {
 			try{
 				// 校验验证码
 				validate(httpServletRequest);
-			} catch (CaptchaException e) {
+			} catch (CustomException e) {
 
 				// 交给认证失败处理器
 				loginFailureHandler.onAuthenticationFailure(httpServletRequest, httpServletResponse, e);
@@ -51,14 +51,14 @@ public class CaptchaFilter extends OncePerRequestFilter {
 		String key = httpServletRequest.getParameter("token");
 
 		if (StringUtils.isBlank(code) || StringUtils.isBlank(key)) {
-			throw new CaptchaException("验证码错误");
+			throw new CustomException("验证码错误");
 		}
 
-		if (!code.equals(redisUtil.hget(Const.CAPTCHA_KEY, key))) {
-			throw new CaptchaException("验证码错误");
+		if (!code.equals(redisTools.hget(Const.CAPTCHA_KEY, key))) {
+			throw new CustomException("验证码错误");
 		}
 
 		// 一次性使用
-		redisUtil.hdel(Const.CAPTCHA_KEY, key);
+		redisTools.hdel(Const.CAPTCHA_KEY, key);
 	}
 }

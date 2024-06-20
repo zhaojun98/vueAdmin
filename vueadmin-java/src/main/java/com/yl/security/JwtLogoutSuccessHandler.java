@@ -2,7 +2,6 @@ package com.yl.security;
 
 import cn.hutool.json.JSONUtil;
 import com.yl.common.CommonResultVo;
-import com.yl.common.lang.Result;
 import com.yl.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

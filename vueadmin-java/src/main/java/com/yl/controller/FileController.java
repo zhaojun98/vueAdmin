@@ -2,7 +2,7 @@ package com.yl.controller;
 
 
 import com.yl.common.CommonResultVo;
-import com.yl.common.ErrorException;
+import com.yl.common.exception.CustomException;
 import com.yl.service.FileService;
 import com.yl.utils.FileUtil;
 import io.swagger.annotations.Api;
@@ -47,7 +47,7 @@ public class FileController {
 
     @ApiOperation("上传")
     @PostMapping(value = "/upload")
-    public CommonResultVo upload(HttpServletRequest request) throws IOException, ErrorException {
+    public CommonResultVo upload(HttpServletRequest request) throws IOException {
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("files");
         StringBuilder address = new StringBuilder();
         if (files != null && files.size() > 0) {
@@ -58,7 +58,7 @@ public class FileController {
         if (address.length() > 0) {
             return CommonResultVo.success((Object) address.substring(0, address.length() - 1));
         }
-        throw new ErrorException("路径和文件名错误");
+        throw new CustomException("路径和文件名错误");
     }
 
 //    @MyLog(value = "文件删除")
@@ -85,7 +85,7 @@ public class FileController {
             @ApiImplicitParam(name = "outputQuality", value = "输出质量(越大清晰度就越高, 0~1)", required = false, dataType = "Float", example = "0.8"),
     })
     public void loadFile(@PathVariable("filename") String filename, Integer height, Integer width, Float outputQuality,
-                         HttpServletResponse response) throws ErrorException {
+                         HttpServletResponse response)  {
         BufferedInputStream in = null;
         ByteArrayOutputStream bos = null;
         try {
@@ -113,7 +113,7 @@ public class FileController {
             }
             response.getOutputStream().write(bos.toByteArray());
         } catch (IOException e) {
-            throw new ErrorException("文件【" + filename + "】不存在");
+            throw new CustomException("文件【" + filename + "】不存在");
         } finally {
             try {
                 if (in != null) {

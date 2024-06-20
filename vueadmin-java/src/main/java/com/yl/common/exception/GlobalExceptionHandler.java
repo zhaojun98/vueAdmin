@@ -1,7 +1,8 @@
 package com.yl.common.exception;
 
 
-import com.szkj.common.CommonResultVo;
+
+import com.yl.common.CommonResultVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;

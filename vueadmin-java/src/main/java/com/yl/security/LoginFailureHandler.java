@@ -2,7 +2,6 @@ package com.yl.security;
 
 import cn.hutool.json.JSONUtil;
 import com.yl.common.CommonResultVo;
-import com.yl.common.lang.Result;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
