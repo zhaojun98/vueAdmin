@@ -36,7 +36,7 @@ public class Swagger3Config {
                 .apiInfo(apiInfo())
                 .select()
                 //不显示错误的接口地址
-                .apis(RequestHandlerSelectors.basePackage("com.szkj.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.yl.controller"))
                 .paths(PathSelectors.any())
                 .build().pathMapping(path);
     }
@@ -45,8 +45,8 @@ public class Swagger3Config {
     @Bean
     public ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("遂宁中院门户")
-                .description("遂宁中院门户接口文档")
+                .title("vueAdmin管理系统")
+                .description("vueAdmin管理系统接口文档")
                 .version("1.0")
                 .license("jerry")
                 .build();
