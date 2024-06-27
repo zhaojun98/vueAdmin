@@ -13,6 +13,7 @@ import com.yl.model.entity.Menu;
 import com.yl.model.entity.Role;
 import com.yl.model.entity.User;
 import com.yl.model.entity.UserRole;
+import com.yl.security.MyPasswordEncoder;
 import com.yl.service.MenuService;
 import com.yl.service.RoleService;
 import com.yl.service.UserRoleService;
@@ -53,7 +54,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 	UserRoleService userRoleService;
 
 	@Resource
-	BCryptPasswordEncoder passwordEncoder;
+	MyPasswordEncoder passwordEncoder;
 
 
 	@Override

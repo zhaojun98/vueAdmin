@@ -2,8 +2,8 @@ package com.yl.controller;
 
 
 import com.yl.common.CommonResultVo;
-import com.yl.model.dto.PassDto;
 import com.yl.common.log.MyLog;
+import com.yl.model.dto.PassDto;
 import com.yl.model.entity.User;
 import com.yl.service.RoleService;
 import com.yl.service.UserRoleService;
@@ -12,7 +12,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,9 +37,9 @@ public class UserController {
 
     @Autowired
     UserRoleService sysUserRoleService;
-
-    @Autowired
-    BCryptPasswordEncoder passwordEncoder;
+//
+//    @Autowired
+//    MyPasswordEncoder passwordEncoder;
 
     @ApiOperation("用户id查询用户信息")
     @GetMapping("/info/{id}")
