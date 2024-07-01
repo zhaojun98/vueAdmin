@@ -6,7 +6,7 @@ package com.yl.constant;
  * @description：
  * @version: V1.1
  */
-public interface JWTConstant {
+public interface JwtConstant {
     /**
      * 用户ID字段
      */
@@ -26,4 +26,17 @@ public interface JWTConstant {
      * 用户名字段
      */
     String DETAILS_USERNAME = "username";
+
+    /**
+     * token有效时间
+     */
+    String EXPIRE = "expire";
+
+    /**
+     * 刷新token有效时间
+     */
+    String REFRESH_TOKEN_VALIDITY_TIME = "refresh_token_validity_time";
+
+    /**刷新token*/
+    String REFRESH_TOKEN= "REFRESH_TOKEN";
 }

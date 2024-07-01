@@ -9,6 +9,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 /**
  * @author ：jerry
  * @date ：Created in 2021/10/29 16:17
@@ -20,7 +22,7 @@ public class MailUtil {
     @Value("${spring.mail.username}")
     private String MAIL_SENDER; //邮件发送者
 
-    @Autowired
+    @Resource
     private JavaMailSender javaMailSender;
 
     private Logger logger = LoggerFactory.getLogger(MailUtil.class);
@@ -30,7 +32,7 @@ public class MailUtil {
      *
      * @param mail
      */
-    public  void sendSimpleMail(MailDto mail) {
+    public  Boolean sendSimpleMail(MailDto mail) {
         try {
             SimpleMailMessage mailMessage= new SimpleMailMessage();
             mailMessage.setFrom(MAIL_SENDER);
@@ -39,8 +41,10 @@ public class MailUtil {
             mailMessage.setText(mail.getContent());
             //mailMessage.copyTo(copyTo);
             javaMailSender.send(mailMessage);
+            return true;
         } catch (Exception e) {
             logger.error("邮件发送失败", e.getMessage());
+            return false;
         }
     }
 }

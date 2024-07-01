@@ -13,4 +13,7 @@ public interface RedisKeyConstant {
 
     /**权限菜单*/
     String GrantedAuthority="GrantedAuthority:";
+
+
+    String LOGIN="login:";
 }

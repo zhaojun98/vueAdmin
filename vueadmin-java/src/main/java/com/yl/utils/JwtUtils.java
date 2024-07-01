@@ -1,7 +1,10 @@
 package com.yl.utils;
 
-import com.yl.constant.JWTConstant;
-import io.jsonwebtoken.*;
+
+import com.yl.constant.JwtConstant;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -29,6 +32,9 @@ public class JwtUtils {
      */
     private String header;
 
+    /**刷新token有效时间*/
+    private long refreshTokenValidityTime;
+
     /**
      * 生成jwt
      *
@@ -39,6 +45,20 @@ public class JwtUtils {
 
         Date nowDate = new Date();
         Date expireDate = new Date(nowDate.getTime() + 1000 * expire);
+
+        return Jwts.builder()
+                .setHeaderParam("typ", "JWT")
+                .setSubject(username)
+                .setIssuedAt(nowDate)
+                .setExpiration(expireDate)// 7天過期
+                .signWith(SignatureAlgorithm.HS512, secret)
+                .compact();
+    }
+
+
+    public String generateRefreshToken(String username) {
+        Date nowDate = new Date();
+        Date expireDate = new Date(nowDate.getTime() + 1000 * refreshTokenValidityTime);
 
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
@@ -75,111 +95,6 @@ public class JwtUtils {
      */
     public boolean isTokenExpired(Claims claims) {
         return claims.getExpiration().before(new Date());
-    }
-
-
-    /**
-     * 从数据声明生成令牌
-     *
-     * @param claims 数据声明
-     * @return 令牌
-     */
-    public String createToken(Map<String, Object> claims) {
-        String token = Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, secret).compact();
-        return token;
-    }
-
-    /**
-     * 从令牌中获取数据声明
-     *
-     * @param token 令牌
-     * @return 数据声明
-     */
-    public Claims parseToken(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-    }
-
-    /**
-     * 根据令牌获取用户标识
-     *
-     * @param token 令牌
-     * @return 用户ID
-     */
-    public String getUserKey(String token) {
-        Claims claims = parseToken(token);
-        return getValue(claims, JWTConstant.USER_KEY);
-    }
-
-    /**
-     * 根据令牌获取用户标识
-     *
-     * @param claims 身份信息
-     * @return 用户ID
-     */
-    public static String getUserKey(Claims claims) {
-        return getValue(claims, JWTConstant.USER_KEY);
-    }
-
-    /**
-     * 根据令牌获取用户ID
-     *
-     * @param token 令牌
-     * @return 用户ID
-     */
-    public String getUserId(String token) {
-        Claims claims = parseToken(token);
-        return getValue(claims, JWTConstant.DETAILS_USER_ID);
-    }
-
-    /**
-     * 根据身份信息获取用户ID
-     *
-     * @param claims 身份信息
-     * @return 用户ID
-     */
-    public String getUserId(Claims claims) {
-        return getValue(claims, JWTConstant.DETAILS_USER_ID);
-    }
-
-    /**
-     * 根据令牌获取用户名
-     *
-     * @param token 令牌
-     * @return 用户名
-     */
-    public String getUserName(String token) {
-        Claims claims = parseToken(token);
-        return getValue(claims, JWTConstant.DETAILS_USERNAME);
-    }
-
-    /**
-     * 根据身份信息获取用户名
-     *
-     * @param claims 身份信息
-     * @return 用户名
-     */
-    public String getUserName(Claims claims) {
-        return getValue(claims, JWTConstant.DETAILS_USERNAME);
-    }
-
-    /**
-     * 根据身份信息获取键值
-     *
-     * @param claims 身份信息
-     * @param key    键
-     * @return 值
-     */
-    public static String getValue(Claims claims, String key) {
-        Object value = claims;
-        String defaultValue = key;
-
-        if (null == value) {
-            return defaultValue;
-        }
-        if (value instanceof String) {
-            return (String) value;
-        }
-        return value.toString();
     }
 
 }

@@ -11,27 +11,21 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
+public class SecurityConfig extends WebSecurityConfigurerAdapter  {
 
 	@Autowired
 	LoginFailureHandler loginFailureHandler;
-
-	@Autowired
-	LoginSuccessHandler loginSuccessHandler;
 
 	@Autowired
 	CaptchaFilter captchaFilter;
@@ -45,8 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 	@Autowired
 	UserDetailServiceImpl userDetailService;
 
-	@Autowired
-	JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
 
 	@Autowired
 	IgnoreWhitesConfig ignoreWhites;
@@ -74,17 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 				.configurationSource(corsConfigurationSource())        //跨域配置
 				.and().csrf().disable()
 
-				// 登录配置
-				.formLogin()
-				.successHandler(loginSuccessHandler)
-				.failureHandler(loginFailureHandler)
-				.and()
-				// 登出配置
-				.logout()
-				.logoutSuccessHandler(jwtLogoutSuccessHandler)
-
 				// 禁用session
-				.and()
 				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
@@ -138,15 +120,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 		return super.authenticationManagerBean();
 	}
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/**").addResourceLocations(
-				"classpath:/static/");
-		registry.addResourceHandler("swagger-ui.html")
-				.addResourceLocations("classpath:/META-INF/resources/");
 
-		registry.addResourceHandler("/webjars/**")
-				.addResourceLocations("classpath:/META-INF/resources/webjars/");
-		registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
-	}
 }
